@@ -1,3 +1,6 @@
 outputs
 **/__pycache__
 slurm_logs
+
+data/datasets/
+data/packed/
