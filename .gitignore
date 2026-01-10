@@ -5,3 +5,6 @@ slurm_logs
 data/datasets/
 data/packed/
 .venv/
+
+od_sobieskiego/
+checkpoints/*
