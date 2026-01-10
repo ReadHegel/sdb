@@ -4,3 +4,4 @@ slurm_logs
 
 data/datasets/
 data/packed/
+.venv/
