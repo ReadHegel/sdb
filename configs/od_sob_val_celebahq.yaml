@@ -23,4 +23,4 @@ exp:
 val_dataloader: 
   batch_size: 2
   dataset:
-    n_samples: 10
+    n_samples: 3000
