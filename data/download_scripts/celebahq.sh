@@ -17,21 +17,22 @@ unzip -q ../packed/celebahq.zip -d ../datasets/
 mv ../datasets/celeba_hq_256 "$DST_DIR"
 
 TRAIN_DIR="$DST_DIR/train"
-VAL_DIR="$DST_DIR/val"
+VAL_DIR="$DST_DIR/valid"
 
 mkdir -p "$TRAIN_DIR" "$VAL_DIR"
 
 echo "🔄 Renaming + splitting CelebA-HQ..."
 
 i=0
-for img in $(ls "$DST_DIR"/*.jpg | sort); do
-  out_name="img_${i}.png"
+out_dir="$TRAIN_DIR"
 
-  if (( i < 27000 )); then
-    out_dir="$TRAIN_DIR"
-  else
+for img in $(ls "$DST_DIR"/*.jpg | sort); do
+  if (( i == 27000 )); then
     out_dir="$VAL_DIR"
+    i=0
   fi
+
+  out_name="img_${i}.png"
 
   if (( i % 1000 == 0 )); then
       echo "$i images converted"

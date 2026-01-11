@@ -112,6 +112,9 @@ class SDB(BaseDiffusion):
         self, fabric, batch_idx, x, denoising_network, log_imgs, log_prefix
     ):
         # sample solutions for given x
+        print("SDB validation step memory summary before sampling:")
+        print(torch.cuda.memory_summary(device=None, abbreviated=False))
+
         log = batch_idx == 0 and log_imgs
         x_0_hat = self.sample(fabric, x, denoising_network, log, log_prefix)
 

@@ -60,6 +60,7 @@ def combine_configs(config, run_dir, key, override_exceptions):
 
     # load config from run_dir
     path_run_dir_config = Path(run_dir) / ".hydra" / "config.yaml"
+    print(path_run_dir_config)
     run_dir_config = OmegaConf.load(path_run_dir_config)
 
     # dump both to standard dict

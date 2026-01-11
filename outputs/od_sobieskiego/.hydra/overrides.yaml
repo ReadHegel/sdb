@@ -1,0 +1,13 @@
+- train_dataloader.num_workers=8
+- val_dataloader.num_workers=8
+- diffusion.n_sampling_timesteps=100
+- timestep_sampler.epsilon_ub=0.01
+- timestep_sampler.epsilon=0.001
+- variance_schedule.beta_min=1.0
+- variance_schedule.beta_max=0.5
+- exp.n_epochs=260
+- exp.log_assets=false
+- exp.log_frequency=8
+- exp.validation_frequency=16
+- exp.save_frequency=8
+- +wandb.tags=[train_sdb_i2sb_celebahq,full_train,100-step]

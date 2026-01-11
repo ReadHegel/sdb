@@ -1,7 +1,7 @@
 _target_: torch.utils.data.DataLoader
 dataset:
   _target_: dataset.celebahq.CelebAHQDataset
-  path_data: data/datasets/celebahq/val
+  path_data: data/datasets/celebahq
   split: valid
   n_samples: 3000
   transform: null

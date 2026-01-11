@@ -148,7 +148,9 @@ class UNet2DGOUD(BaseNetwork):
             x = xt
 
         H, W = x.shape[2:]
+        print(x.shape)
         x = self.check_image_size(x, H, W)
+
 
         x = self.init_conv(x)
         x_ = x.clone()
@@ -156,6 +158,8 @@ class UNet2DGOUD(BaseNetwork):
         t = self.time_mlp(time)
 
         h = []
+
+        
 
         for b1, b2, attn, downsample in self.downs:
             x = b1(x, t)

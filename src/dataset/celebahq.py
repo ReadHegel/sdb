@@ -30,6 +30,8 @@ class CelebAHQDataset(Dataset):
         super(CelebAHQDataset, self).__init__()
         
         self.split = split
+        print(f"Initializing CelebAHQDataset with {n_samples=} and {split=}")
+        print(f"Data path: {path_data}")
         self.paths = self.get_paths(path_data, split)
         self.length = min(len(self.paths), n_samples)
         self.transform = transform

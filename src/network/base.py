@@ -39,3 +39,14 @@ class BaseNetwork(torch.nn.Module, abc.ABC):
             param_count = param.numel()
             total_params += param_count
         log.info(f"Total number of parameters: {total_params}")
+
+    def get_network_size_in_mib(self):
+        param_size = 0
+        for param in self.parameters():
+            param_size += param.nelement() * param.element_size()
+        buffer_size = 0
+        for buffer in self.buffers():
+            buffer_size += buffer.nelement() * buffer.element_size()
+
+        size_all_mb = (param_size + buffer_size) / 1024**2
+        return size_all_mb

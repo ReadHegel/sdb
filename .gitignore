@@ -1,4 +1,3 @@
-outputs
 **/__pycache__
 slurm_logs
 
@@ -8,3 +7,13 @@ data/packed/
 
 od_sobieskiego/
 checkpoints/*
+
+outputs/**/*
+!outputs/od_sobieskiego/
+!outputs/od_sobieskiego/wandb/
+!outputs/od_sobieskiego/wandb/checkpoints/
+!outputs/od_sobieskiego/wandb/checkpoints/README.md
+!outputs/od_sobieskiego/.hydra/
+!outputs/od_sobieskiego/.hydra/*
+
+outputs/od_sobieskiego/wandb/checkpoints/checkpoint_*.ckpt

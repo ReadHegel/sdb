@@ -1,0 +1,26 @@
+defaults:
+  - dataloader@val_dataloader: celebahq/val
+  - _self_
+  - metric: all_celebahq
+  - wandb: default
+  - fabric: single_gpu
+  - hydra: default
+
+exp:
+  seed: 42
+  log_dir: # set during runtime to automatically created dir
+
+  run_func: 
+    _target_: experiment.eval_diffusion.run
+
+  train_log_dir: outputs/od_sobieskiego/wandb/checkpoints
+  n_ckpts_to_skip: 0
+  every_n_ckpt: 1
+  n_ckpts_total: 1
+
+  log_assets: false
+  eval_ema: false
+val_dataloader: 
+  batch_size: 5
+  dataset:
+    n_samples: 10

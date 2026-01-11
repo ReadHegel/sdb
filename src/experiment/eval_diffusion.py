@@ -48,7 +48,7 @@ def get_val_dataloader(config, fabric):
     """Instantiate dataloader and setup with Fabric."""
     return fabric.setup_dataloaders(instantiate(config.val_dataloader))
 
-
+@torch.no_grad()
 def run_validation(config, fabric, dataloader, diffusion, network, metrics, log_prefix):
     # network eval state
     network.eval()
@@ -85,7 +85,10 @@ def run_validation(config, fabric, dataloader, diffusion, network, metrics, log_
 
 def get_paths_checkpoints(config, fabric):
     # path to ckpts dir
-    path = Path(config.exp.train_log_dir) / "checkpoints"
+    #
+    # Na moje to tak powinno byc 
+    # path = Path(config.exp.train_log_dir) / "checkpoints"
+    path = Path(config.exp.train_log_dir)
 
     # find all checkpoints and get sorted truncated list
     paths = list(path.glob("*.ckpt"))
@@ -117,12 +120,16 @@ def load_checkpoint(fabric, path_checkpoint, network, ema_network):
         # ema is not evaluated for other methods as we use only provided checkpoints
         eval_ema = False
 
+
     return eval_ema
 
 
 def run(config: DictConfig):
-    torch.multiprocessing.set_start_method("spawn")
+    if torch.multiprocessing.get_start_method(allow_none=True) != "spawn":
+        torch.multiprocessing.set_start_method("spawn")
+
     utils.hydra.preprocess_config(config)
+    print(Path(config.exp.train_log_dir))
     config = utils.hydra.combine_configs(
         config,
         Path(config.exp.train_log_dir).parents[1],
@@ -140,6 +147,13 @@ def run(config: DictConfig):
         network, ema_network, diffusion, metrics = get_components(
             config.train_config, fabric
         )
+
+        ema_network.ema_model.to("cpu") # DEBUG
+        # Print network sizes and devices
+        print(f"UNet params: {network.get_network_size_in_mib():.3f} MB")
+        print(f"EMA-UNet params: {ema_network.ema_model.get_network_size_in_mib():.3f} MB")
+        print(f"Unet device: {next(network.parameters()).device}")
+        print(f"EMA-Unet device: {next(ema_network.parameters()).device}")
 
         log.info("Initializing dataloaders")
         val_dataloader = get_val_dataloader(config, fabric)
@@ -163,6 +177,8 @@ def run(config: DictConfig):
 
             # validate ema network
             if eval_ema and config.exp.eval_ema:
+                ema_network.ema_model.to(fabric.device) # DEBUG
+
                 log.info("Validating EMA network")
                 run_validation(
                     config,

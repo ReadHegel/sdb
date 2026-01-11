@@ -23,3 +23,14 @@ Data from the following links should be download and placed in the corresponding
 `data/metadata`: 
 
 `data/weights`:
+
+# How to run checkpoint od_sobieskiego: 
+
+To run the model checkpoint `od_sobieskiego`, use the following command:
+
+```
+PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True WANDB_MODE=online HYDRA_FULL_ERROR=1 python src/main.py --config-name od_sob_val_celebahq.yaml
+
+```
+```
+

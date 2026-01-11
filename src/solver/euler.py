@@ -24,6 +24,7 @@ class EulerSolver(BaseSolver):
         timesteps, dts = timestep_sampler.get_path(n_timesteps)
 
         for i, (t, dt) in enumerate(zip(timesteps, dts)):
+            print("TIMESTEP:", i+1, "OUT OF", n_timesteps)
             # get time increment and timestep
             t = t.repeat(B)
             dt = dt.repeat(B)

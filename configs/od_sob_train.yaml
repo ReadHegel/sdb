@@ -1,0 +1,136 @@
+exp:
+  seed: 42
+  log_dir: null
+  run_func:
+    _target_: experiment.train_diffusion.run
+  log_assets: false
+  eval_ema: false
+  n_epochs: 260
+  log_frequency: 8
+  validation_frequency: 16
+  save_frequency: 8
+  batch_accum: 1
+  load_ckpt: null
+measurement_model:
+  _target_: measurement_model.mask_clean.MaskModelWithNoNoise
+  path_masks: data/metadata/masks/celebahq/thin
+  add_mask: false
+  var: 0.0
+diffusion:
+  _target_: diffusion.sdb.SDB
+  sde: ${sde}
+  timestep_sampler: ${timestep_sampler}
+  solver: ${solver}
+  # return_traj: false
+solver:
+  _target_: solver.euler.EulerSolver
+  n_sampling_timesteps: 100
+sde:
+  _target_: sde.sdb.SDB
+  measurement_system: ${measurement_model}
+  variance_schedule: ${variance_schedule}
+  reverse_type: SDE
+network:
+  _target_: network.unet_2d_goub.UNet2DGOUD
+  in_nc: 3
+  out_nc: 3
+  nf: 64
+  depth: 4
+  condition_type: PSEUDOINVERSE_RECONSTRUCTION
+  condition_transform_type: CONCATENATION
+  transform_x: null
+  inv_transform_x: null
+  transform_cond: null
+  prediction_type: X_0
+ema_network:
+  _partial_: true
+  _target_: ema_pytorch.EMA
+  beta: 0.995
+  update_every: 10
+  include_online_model: false
+optimizer:
+  _partial_: true
+  _target_: torch.optim.Adam
+  lr: 0.0001
+  betas:
+  - 0.9
+  - 0.99
+  weight_decay: 0
+lr_scheduler:
+  _partial_: true
+  _target_: lr_scheduler.multistep.MultiStepLR_Restart
+  milestones:
+  - 85
+  - 142
+  - 170
+  - 213
+  restarts:
+  - 0
+  restart_weights:
+  - 1
+  gamma: 0.5
+  gamma_: 0.5
+  clear_state: false
+  last_epoch: -1
+loss_function:
+  _partial_: true
+  _target_: loss_function.l1.l1
+timestep_sampler:
+  _target_: timestep_sampler.uniform.UniformTimestepSampler
+  epsilon: 0.001
+  epsilon_ub: 0.01
+variance_schedule:
+  _target_: variance_schedule.sdb_i2sb.SDBI2SBVarianceSchedule
+  beta_min: 1.0
+  beta_max: 0.5
+  log_assets: ${exp.log_assets}
+train_dataloader:
+  _target_: torch.utils.data.DataLoader
+  dataset:
+    _target_: dataset.celebahq.CelebAHQDataset
+    path_data: data/datasets/celebahq
+    split: train
+    n_samples: 27000
+    transform:
+      _target_: torchvision.transforms.Compose
+      transforms:
+      - _target_: torchvision.transforms.RandomHorizontalFlip
+        p: 0.5
+      - _partial_: true
+        _target_: transform.random_rot90.random_rotate_90
+        p: 0.5
+  #batch_size: 8
+  batch_size: 1
+  num_workers: 8
+val_dataloader:
+  _target_: torch.utils.data.DataLoader
+  dataset:
+    _target_: dataset.celebahq.CelebAHQDataset
+    path_data: data/datasets/celebahq
+    split: valid
+    n_samples: 3000
+    transform: null
+  batch_size: 32
+  num_workers: 8
+metric:
+  fid:
+    _target_: metric.fid.FID
+    dims: 2048
+    correct_scale_and_shape: true
+  lpips:
+    _target_: metric.lpips.LPIPS
+    correct_scale_and_shape: false
+  psnr_ssim:
+    _target_: metric.psnr_ssim.PSNRSSIM
+    correct_scale_and_shape: false
+wandb:
+  project: pdb
+  tags:
+  - train_sdb_i2sb_celebahq
+  - full_train
+  - 100-step
+fabric:
+  _target_: lightning.Fabric
+  num_nodes: 1
+  devices: 1
+
