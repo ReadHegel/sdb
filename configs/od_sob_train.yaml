@@ -3,7 +3,7 @@ exp:
   log_dir: null
   run_func:
     _target_: experiment.train_diffusion.run
-  log_assets: false
+  log_assets: true
   eval_ema: false
   n_epochs: 260
   log_frequency: 8

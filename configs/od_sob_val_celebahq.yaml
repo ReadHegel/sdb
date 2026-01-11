@@ -18,9 +18,9 @@ exp:
   every_n_ckpt: 1
   n_ckpts_total: 1
 
-  log_assets: false
+  log_assets: true
   eval_ema: false
 val_dataloader: 
-  batch_size: 5
+  batch_size: 2
   dataset:
     n_samples: 10
