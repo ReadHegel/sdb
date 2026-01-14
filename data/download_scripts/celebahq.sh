@@ -39,7 +39,9 @@ for img in $(ls "$DST_DIR"/*.jpg | sort); do
   fi
 
   # JPG → PNG + rename xD
-  magick "$img" "$out_dir/$out_name"
+  # magick "$img" "$out_dir/$out_name"
+  # convert "$img" "$out_dir/$out_name"
+  ffmpeg -i "$img" "$out_dir/$out_name"
 
   rm "$img"
 
