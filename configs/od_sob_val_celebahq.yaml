@@ -21,6 +21,6 @@ exp:
   log_assets: true
   eval_ema: false
 val_dataloader: 
-  batch_size: 2
+  batch_size: 32
   dataset:
     n_samples: 3000
